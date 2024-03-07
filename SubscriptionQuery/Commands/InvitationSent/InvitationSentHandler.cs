@@ -22,7 +22,7 @@ namespace SubscriptionQuery.Commands.InvitationSent
         public async Task<bool> Handle(InvitationSent request, CancellationToken cancellationToken)
         {
             var list = await _db.Subscriptions.Include(x => x.Invitations).ToListAsync();
-            if (await _db.Invitations.AnyAsync(i => i.Id == request.Data.InvitationId && i.UserSubscriptionId == request.AggregateId, cancellationToken: cancellationToken))
+            if (await _db.Invitations.AnyAsync(i => i.Id == request.Data.InvitationId && i.UserSubscriptionId == request.AggregateId && i.Status == InvitationStatus.Pending, cancellationToken: cancellationToken))
                 return true;
 
             var userSubscription = await _db.Subscriptions.FirstOrDefaultAsync(s 

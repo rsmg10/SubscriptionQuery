@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SubscriptionQuery.Commands.InvitationRejected;
 using SubscriptionQuery.Infrastructure.Presistance;
+using SubscriptionQuery.Infrastructure.Presistance.Entities;
 
 namespace SubscriptionQuery.Commands.MemberJoined
 {
@@ -24,7 +25,7 @@ namespace SubscriptionQuery.Commands.MemberJoined
                 .FirstOrDefaultAsync(s
                 => s.Id == request.AggregateId, cancellationToken);
 
-            if (userSubscription == null || userSubscription.Sequence < request.Sequence - 1)
+            if ((userSubscription == null || userSubscription.Sequence < request.Sequence - 1) && request.Data.JoinedBy is Domain.Enums.JoinedBy.Invitation)
             {
                 _logger.LogWarning(
                     "Event not handled, AggregateId: {AggregateId}, Sequence: {Sequence}.",
@@ -33,13 +34,26 @@ namespace SubscriptionQuery.Commands.MemberJoined
 );
                 return false;
             }
+            
+            var isNew = userSubscription is null;
+            userSubscription ??= new UserSubscription();
 
             if (request.Sequence <= userSubscription.Sequence)
                 return true;
- 
+
+
             userSubscription.Apply(request);
 
-            return await _db.SaveChangesAsync(cancellationToken) > 0;
+            if (isNew)
+            {
+                await _db.Subscriptions.AddAsync(userSubscription, cancellationToken);
+            }
+            else
+            {
+                await _db.SaveChangesAsync(cancellationToken);
+            }
+
+            return true;
         }
     }
 }

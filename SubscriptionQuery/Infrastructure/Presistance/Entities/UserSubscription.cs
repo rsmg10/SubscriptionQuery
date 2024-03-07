@@ -11,7 +11,7 @@ using SubscriptionQuery.Domain.Enums;
 
 namespace SubscriptionQuery.Infrastructure.Presistance.Entities;
 
-public class UserSubscription : BaseEntity
+public partial class UserSubscription : BaseEntity
 {
     public Guid Id { get; set; }
     public Guid OwnerId { get; set; }
@@ -80,6 +80,10 @@ public class UserSubscription : BaseEntity
         Sequence = request.Sequence;
         DateUpdated = request.DateTime;
         Permissions = request.Data.Permission;
+        AccountId = request.Data.AccountId;
+        OwnerId = request.Data.UserId;
+        SubscriptionId = request.Data.SubscriptionId;
+        MemberId = request.Data.MemberId;
         IsJoined = true;  
     }
 
