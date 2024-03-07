@@ -1,4 +1,4 @@
-using FluentValidation.Results; 
+using FluentValidation.Results;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using SubscriptionQuery.Commands.InvitationSent;
@@ -9,6 +9,7 @@ using Xunit.Abstractions;
 using SubscriptionQuery;
 using Microsoft.AspNetCore.Mvc.Testing;
 using SubscriptionQuery.Infrastructure.Presistance;
+using SubscriptionQuery.Test.Helpers;
 namespace SubscriptionQuery.Test;
 
 public class InvitationSentTests : TestBase, IClassFixture<WebApplicationFactory<Program>>
@@ -153,20 +154,20 @@ public class InvitationSentTests : TestBase, IClassFixture<WebApplicationFactory
 
         await Database.Subscriptions.AddAsync(userSubscription);
         await Database.SaveChangesAsync();
-        Database.DetachAllEntities();
+        //Database.DetachAllEntities();
 
 
         //var e = new MemberRemoved(aggregateId, new MemberRemovedData(userId, subsciptionId, memberId), DateTime.UtcNow, 9, Guid.NewGuid().ToString(), 1);
         var e = new InvitationSent(aggregateId,
-                   new InvitationSentData(userId, subsciptionId, memberId, Permissions.PurchaseCards, invitationId, accountId),
+                   new InvitationSentData(userId, subsciptionId, memberId, Permissions.PurchaseCards, Guid.NewGuid(), accountId),
                    DateTime.UtcNow, 9, userId.ToString(), 1);
 
         var result = await Mediator.Send(e);
 
         Assert.True(result);
 
-        //Assert.Equal(2, await Database.Invitations.AsNoTracking().CountAsync());
-        //Assert.Equal(1, await Database.Subscriptions.AsNoTracking().CountAsync());
+        Assert.Equal(2, await Database.Invitations.AsNoTracking().CountAsync());
+        Assert.Equal(1, await Database.Subscriptions.AsNoTracking().CountAsync());
 
         var userSubscriptoinDb = await Database.Subscriptions.AsNoTracking().Include(x => x.Invitations).FirstAsync();
 
@@ -208,8 +209,4 @@ public class InvitationSentTests : TestBase, IClassFixture<WebApplicationFactory
             }
         };
     }
-
-  
-
-
 }

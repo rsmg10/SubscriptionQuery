@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using SubscriptionQuery.QueryHandlers.PendingInvitationsReceived;
+using SubscriptionQuery.Extensions;
+using SubscriptionQuery.QueryHandlers.PendingInvitationsSent;
 
-namespace SubscriptionQuery.Extensions
+namespace SubscriptionQuery.QueryHandlers.PendingInvitationsSent
 {
  
     public record PendingInvitationsSentQuery(

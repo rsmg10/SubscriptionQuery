@@ -8,7 +8,7 @@ using Serilog;
 using Serilog.Events;
 using Xunit.Abstractions;
 
-namespace SubscriptionQuery.Test
+namespace SubscriptionQuery.Test.Helpers
 {
     public static class WebApplicationExtensions
     {

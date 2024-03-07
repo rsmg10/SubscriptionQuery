@@ -1,4 +1,5 @@
-﻿namespace SubscriptionQuery.QueryHandlers.PendingInvitationsReceived
+﻿using SubscriptionQuery.QueryHandlers.PendingInvitationsReceived;
+namespace SubscriptionQuery.QueryHandlers.PendingInvitationsSent
 {
     public record SentInvitation(
         string SubscriptionName,

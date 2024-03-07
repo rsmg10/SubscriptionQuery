@@ -8,7 +8,7 @@ using SubscriptionQuery.Infrastructure.Presistance;
 using Xunit.Abstractions;
 using Xunit.Sdk;
 
-namespace SubscriptionQuery.Test
+namespace SubscriptionQuery.Test.Helpers
 {
     public class TestBase
     {
@@ -28,7 +28,7 @@ namespace SubscriptionQuery.Test
 
             var scope = Factory.Services.CreateScope();
             Database = scope.ServiceProvider.GetRequiredService<ApplicationDatabase>();
-            Mediator= scope.ServiceProvider.GetRequiredService<IMediator>();
+            Mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         }
     }
 }

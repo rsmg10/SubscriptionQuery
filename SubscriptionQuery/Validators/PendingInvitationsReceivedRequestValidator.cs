@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using SubscriptionQuery;
 
-namespace Todo.Query.Validators
+namespace SubscriptionQuery.Validators
 {
     public class PendingInvitationsReceivedRequestValidator : AbstractValidator<PendingInvitationsReceivedRequest>
     {

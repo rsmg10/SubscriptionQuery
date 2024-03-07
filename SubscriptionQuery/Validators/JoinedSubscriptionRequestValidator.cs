@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using SubscriptionQuery;
 
-namespace Todo.Query.Validators
+namespace SubscriptionQuery.Validators
 {
     public class JoinedSubscriptionRequestValidator : AbstractValidator<JoinedSubscriptionRequest>
     {

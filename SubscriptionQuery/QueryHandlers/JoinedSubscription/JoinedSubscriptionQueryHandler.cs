@@ -1,7 +1,7 @@
 ﻿using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SubscriptionQuery.Infrastructure.Presistance;
-using Todo.Query.Extensions;
+using SubscriptionQuery.Extensions;
 
 namespace SubscriptionQuery.QueryHandlers.JoinedSubscription
 {

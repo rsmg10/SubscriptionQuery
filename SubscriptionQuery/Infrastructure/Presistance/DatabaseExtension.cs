@@ -8,7 +8,6 @@ namespace SubscriptionQuery.Infrastructure.Presistance
         public static void DetachAllEntities(this DbContext context)
         {
             var entries = context.ChangeTracker.Entries()
-                //.Where(e => e.State != EntityState.Detached)
                 .ToList();
 
             foreach (var entry in entries)
@@ -19,8 +18,5 @@ namespace SubscriptionQuery.Infrastructure.Presistance
                 }
             }
         }
-
-     
-
     }
 }

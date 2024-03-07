@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SubscriptionQuery.Infrastructure.Presistance;
 using SubscriptionQuery.QueryHandlers.MembersInSubscription;
+using SubscriptionQuery.QueryHandlers.PendingInvitationsSent;
 
 namespace SubscriptionQuery.QueryHandlers.PendingInvitationsReceived
 {

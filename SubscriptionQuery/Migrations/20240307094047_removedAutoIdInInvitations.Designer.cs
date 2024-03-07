@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SubscriptionQuery.Infrastructure.Presistance;
 
@@ -11,9 +12,11 @@ using SubscriptionQuery.Infrastructure.Presistance;
 namespace SubscriptionQuery.Migrations
 {
     [DbContext(typeof(ApplicationDatabase))]
-    partial class ApplicationDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20240307094047_removedAutoIdInInvitations")]
+    partial class removedAutoIdInInvitations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

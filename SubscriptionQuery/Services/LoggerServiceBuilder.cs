@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace Todo.Query.Services
+namespace SubscriptionQuery.Services
 {
     public class LoggerServiceBuilder
     {

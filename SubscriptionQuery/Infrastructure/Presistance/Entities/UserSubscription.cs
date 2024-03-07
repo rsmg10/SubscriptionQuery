@@ -21,7 +21,7 @@ public partial class UserSubscription : BaseEntity
     public bool IsJoined { get; set; }
     public Permissions Permissions { get; set; }
     public SubscriptionType SubscriptionType { get; set; }
-    public ICollection<Invitation> Invitations { get; set; } 
+    public ICollection<Invitation> Invitations { get; set; } = new List<Invitation>();
 
     internal static UserSubscription Create(InvitationSent request)
     {
@@ -70,8 +70,8 @@ public partial class UserSubscription : BaseEntity
 
     internal void Apply(InvitationSent request)
     {
-        Invitations ??= new List<Invitation>();
         Invitations.Add(Invitation.Create(request));
+
         Sequence = request.Sequence;
     }
 

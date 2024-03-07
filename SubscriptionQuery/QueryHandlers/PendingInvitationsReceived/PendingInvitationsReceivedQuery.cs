@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using SubscriptionQuery.QueryHandlers.PendingInvitationsSent;
 
 namespace SubscriptionQuery.QueryHandlers.PendingInvitationsReceived
 {

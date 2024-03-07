@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SubscriptionQuery.Extensions;
 using SubscriptionQuery.Infrastructure.Presistance;
 using SubscriptionQuery.QueryHandlers.PendingInvitationsReceived;
+using SubscriptionQuery.QueryHandlers.PendingInvitationsSent;
 
 namespace SubscriptionQuery.QueryHandlers.PendingInvitationsSent
 {

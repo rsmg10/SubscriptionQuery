@@ -5,7 +5,7 @@ using SubscriptionQuery.GrpcServices;
 using SubscriptionQuery.Infrastructure.MessageBus;
 using SubscriptionQuery.Infrastructure.Presistance;
 using System;
-using Todo.Query.Services;
+using SubscriptionQuery.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 

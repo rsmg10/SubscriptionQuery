@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using SubscriptionQuery.Infrastructure.Presistance;
 using SubscriptionQuery.QueryHandlers.MembersInSubscription;
+using SubscriptionQuery.Extensions;
 
-namespace SubscriptionQuery.Extensions
+namespace SubscriptionQuery.QueryHandlers.MembersInSubscription
 {
     public class MembersInSubscriptionQueryHandler : IRequestHandler<MembersInSubscriptionQuery, MembersInSubscriptionResponse>
     {

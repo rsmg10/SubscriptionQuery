@@ -23,10 +23,12 @@ namespace SubscriptionQuery.Commands.InvitationSent
         public async Task<bool> Handle(InvitationSent request, CancellationToken cancellationToken)
         { 
  
-            if (await _db.Invitations.AsNoTracking().AnyAsync(i => i.Id == request.Data.InvitationId && i.UserSubscriptionId == request.AggregateId && i.Status == InvitationStatus.Pending, cancellationToken: cancellationToken))
+            if (await _db.Invitations.AsNoTracking()
+                .AnyAsync(i => i.Id == request.Data.InvitationId && i.UserSubscriptionId == request.AggregateId && i.Status == InvitationStatus.Pending, cancellationToken: cancellationToken))
                 return true;
 
-            var userSubscription = await _db.Subscriptions.FirstOrDefaultAsync(s 
+            var userSubscription = await _db.Subscriptions.Include(x=> x.Invitations)
+                .FirstOrDefaultAsync(s 
                 => s.Id == request.AggregateId, cancellationToken);
 
             var isNew = userSubscription == null;
@@ -42,8 +44,7 @@ namespace SubscriptionQuery.Commands.InvitationSent
                 _logger.LogWarning(
                     "Event not handled, AggregateId: {AggregateId}, Sequence: {Sequence}.",
                     request.AggregateId,
-                    request.Sequence
-);
+                    request.Sequence);
                 return false;
             }
 

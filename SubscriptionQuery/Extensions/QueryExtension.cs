@@ -1,5 +1,7 @@
 ﻿using SubscriptionQuery.QueryHandlers.JoinedSubscription;
 using SubscriptionQuery.QueryHandlers.PendingInvitationsReceived;
+using SubscriptionQuery.QueryHandlers.MembersInSubscription;
+using SubscriptionQuery.QueryHandlers.PendingInvitationsSent;
 
 namespace SubscriptionQuery.Extensions
 {
