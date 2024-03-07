@@ -20,6 +20,7 @@ namespace SubscriptionQuery.Infrastructure.Presistance
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            optionsBuilder.EnableSensitiveDataLogging();
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -29,5 +30,8 @@ namespace SubscriptionQuery.Infrastructure.Presistance
             modelBuilder.Entity<UserSubscription>().Property(x => x.Permissions).HasConversion<string>();
             base.OnModelCreating(modelBuilder);
         }
+         
+
     }
+    
 }

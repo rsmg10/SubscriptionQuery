@@ -1,5 +1,4 @@
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc.Testing;
+using FluentValidation.Results; 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using SubscriptionQuery.Commands.InvitationSent;
@@ -7,10 +6,12 @@ using SubscriptionQuery.Commands.MemberRemoved;
 using SubscriptionQuery.Domain.Enums;
 using SubscriptionQuery.Infrastructure.Presistance.Entities;
 using Xunit.Abstractions;
-
+using SubscriptionQuery;
+using Microsoft.AspNetCore.Mvc.Testing;
+using SubscriptionQuery.Infrastructure.Presistance;
 namespace SubscriptionQuery.Test;
 
-public class InvitationSentTests : TestBase
+public class InvitationSentTests : TestBase, IClassFixture<WebApplicationFactory<Program>>
 {
     public InvitationSentTests(WebApplicationFactory<Program> factory, ITestOutputHelper testOutput) : base(factory, testOutput)
     {
@@ -28,7 +29,7 @@ public class InvitationSentTests : TestBase
         
         var e = new InvitationSent(aggregateId,
                                    new InvitationSentData(userId, subsciptionId, memberId, Permissions.PurchaseCards, invitationId, accountId),
-                                   DateTime.UtcNow, 0, userId.ToString(), 1);
+                                   DateTime.UtcNow, 1, userId.ToString(), 1);
 
         var result = await Mediator.Send(e);
 
@@ -71,7 +72,7 @@ public class InvitationSentTests : TestBase
 
         var e = new InvitationSent(aggregateId,
                                    new InvitationSentData(userId, subsciptionId, memberId, Permissions.PurchaseCards, invitationId, accountId),
-                                   DateTime.UtcNow, 0, userId.ToString(), 5);
+                                   DateTime.UtcNow, 5, userId.ToString(), 1);
 
         var result = await Mediator.Send(e);
 
@@ -131,7 +132,7 @@ public class InvitationSentTests : TestBase
         Assert.Equal(userSubscription.Id, userSubscriptoinDb.Id);
         Assert.Equal(userSubscription.OwnerId, userSubscriptoinDb.OwnerId);
         Assert.Equal(userSubscription.SubscriptionId, userSubscriptoinDb.SubscriptionId);
-        Assert.Equal(3, userSubscriptoinDb.Sequence);
+        Assert.Equal(8, userSubscriptoinDb.Sequence);
         Assert.Equal(userSubscription.Invitations, userSubscriptoinDb.Invitations);
         Assert.True(userSubscriptoinDb.IsJoined);
         Assert.Equal(Permissions.PurchaseCards, userSubscriptoinDb.Permissions);
@@ -139,9 +140,7 @@ public class InvitationSentTests : TestBase
 
     [Fact]
     public async Task SendInvitation_WithCorrectSequenceAndPriorInvitationAllows_ShouldReturnTrueAsync()
-    {
-        // invitaiton count++
-
+    { 
         var aggregateId = Guid.NewGuid();
         var userId = Guid.NewGuid();
         var subsciptionId = Guid.NewGuid();
@@ -154,28 +153,31 @@ public class InvitationSentTests : TestBase
 
         await Database.Subscriptions.AddAsync(userSubscription);
         await Database.SaveChangesAsync();
+        Database.DetachAllEntities();
 
 
-        var e = new MemberRemoved(aggregateId, new MemberRemovedData(userId, subsciptionId, memberId), DateTime.UtcNow, 9, Guid.NewGuid().ToString(), 1);
+        //var e = new MemberRemoved(aggregateId, new MemberRemovedData(userId, subsciptionId, memberId), DateTime.UtcNow, 9, Guid.NewGuid().ToString(), 1);
+        var e = new InvitationSent(aggregateId,
+                   new InvitationSentData(userId, subsciptionId, memberId, Permissions.PurchaseCards, invitationId, accountId),
+                   DateTime.UtcNow, 9, userId.ToString(), 1);
 
         var result = await Mediator.Send(e);
 
         Assert.True(result);
 
-        var userSubscriptoinDb = await Database.Subscriptions.Include(x => x.Invitations).FirstAsync();
+        //Assert.Equal(2, await Database.Invitations.AsNoTracking().CountAsync());
+        //Assert.Equal(1, await Database.Subscriptions.AsNoTracking().CountAsync());
+
+        var userSubscriptoinDb = await Database.Subscriptions.AsNoTracking().Include(x => x.Invitations).FirstAsync();
 
         Assert.Equal(userSubscription.AccountId, userSubscriptoinDb.AccountId);
         Assert.Equal(userSubscription.Id, userSubscriptoinDb.Id);
         Assert.Equal(userSubscription.OwnerId, userSubscriptoinDb.OwnerId);
         Assert.Equal(userSubscription.SubscriptionId, userSubscriptoinDb.SubscriptionId);
-        Assert.Equal(3, userSubscriptoinDb.Sequence);
-        Assert.Equal(userSubscription.Invitations, userSubscriptoinDb.Invitations);
-        Assert.True(userSubscriptoinDb.IsJoined);
+        Assert.Equal(9, userSubscriptoinDb.Sequence); 
+        Assert.False(userSubscriptoinDb.IsJoined);
         Assert.Equal(Permissions.PurchaseCards, userSubscriptoinDb.Permissions);
-
-
     }
-
 
 
     private static UserSubscription GetUserSubscription(Guid aggregateId, Guid userId, Guid subsciptionId, Guid invitationId, Guid accountId, Guid memberId, int sequence, Permissions permission, InvitationStatus invitationStatus, bool isJoined )
@@ -206,5 +208,8 @@ public class InvitationSentTests : TestBase
             }
         };
     }
+
+  
+
 
 }

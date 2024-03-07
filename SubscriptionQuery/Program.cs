@@ -35,3 +35,7 @@ app.MapGet("/",
 
 
 app.Run();
+namespace SubscriptionQuery
+{
+    public partial class Program { }
+}
