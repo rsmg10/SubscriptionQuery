@@ -1,12 +1,11 @@
-﻿using Bogus;
-using MediatR;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
+using SubscriptionQuery.Domain.Enums;
 using SubscriptionQuery.Infrastructure.Presistance;
+using SubscriptionQuery.Infrastructure.Presistance.Entities;
 using Xunit.Abstractions;
-using Xunit.Sdk;
 
 namespace SubscriptionQuery.Test.Helpers
 {
@@ -30,5 +29,36 @@ namespace SubscriptionQuery.Test.Helpers
             Database = scope.ServiceProvider.GetRequiredService<ApplicationDatabase>();
             Mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         }
+
+        protected static UserSubscription GetUserSubscription(Guid aggregateId, Guid userId, Guid subsciptionId, Guid invitationId, Guid accountId, Guid memberId, int sequence, Permissions permission, InvitationStatus invitationStatus, bool isJoined)
+        {
+            return new UserSubscription
+            {
+                Id = aggregateId,
+                Permissions = permission,
+                AccountId = accountId,
+                IsJoined = isJoined,
+                DateCreated = DateTime.UtcNow,
+                DateUpdated = DateTime.UtcNow,
+                MemberId = memberId,
+                OwnerId = userId,
+                Sequence = sequence,
+                SubscriptionId = subsciptionId,
+                Invitations = new List<Invitation>
+            {
+                new()
+                {
+                    DateUpdated = DateTime.UtcNow,
+                    DateCreated= DateTime.UtcNow,
+                    Id = invitationId,
+                    Permission = permission,
+                    Status  = invitationStatus,
+                    UserSubscriptionId = aggregateId,
+                }
+            }
+            };
+        }
+
     }
+
 }

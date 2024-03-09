@@ -48,8 +48,7 @@ public partial class UserSubscription : BaseEntity
         invitation.Status = InvitationStatus.Accepted;
         invitation.DateUpdated = request.DateTime;
         Permissions = invitation.Permission;
-        Sequence = request.Sequence; 
-        IsJoined = true;
+        Sequence = request.Sequence;  
     }
 
     internal void Apply(InvitationCancelled request)
@@ -77,6 +76,7 @@ public partial class UserSubscription : BaseEntity
 
     internal void Apply(MemberJoined request)
     {
+        Id = request.AggregateId;
         Sequence = request.Sequence;
         DateUpdated = request.DateTime;
         Permissions = request.Data.Permission;

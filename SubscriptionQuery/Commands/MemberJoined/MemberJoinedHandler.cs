@@ -25,13 +25,13 @@ namespace SubscriptionQuery.Commands.MemberJoined
                 .FirstOrDefaultAsync(s
                 => s.Id == request.AggregateId, cancellationToken);
 
-            if ((userSubscription == null || userSubscription.Sequence < request.Sequence - 1) && request.Data.JoinedBy is Domain.Enums.JoinedBy.Invitation)
+            if (((userSubscription == null || userSubscription.Sequence < request.Sequence - 1) && request.Data.JoinedBy is Domain.Enums.JoinedBy.Invitation) 
+                || (userSubscription == null || userSubscription.Sequence < request.Sequence - 1) && request.Data.JoinedBy is Domain.Enums.JoinedBy.Admin && request.Sequence != 1)
             {
                 _logger.LogWarning(
                     "Event not handled, AggregateId: {AggregateId}, Sequence: {Sequence}.",
                     request.AggregateId,
-                    request.Sequence
-);
+                    request.Sequence);
                 return false;
             }
             
@@ -48,10 +48,8 @@ namespace SubscriptionQuery.Commands.MemberJoined
             {
                 await _db.Subscriptions.AddAsync(userSubscription, cancellationToken);
             }
-            else
-            {
-                await _db.SaveChangesAsync(cancellationToken);
-            }
+            
+            await _db.SaveChangesAsync(cancellationToken);
 
             return true;
         }
