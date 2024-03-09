@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Grpc.Net.Client;
+using MediatR;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +12,7 @@ namespace SubscriptionQuery.Test.Helpers
 {
     public class TestBase
     {
-        WebApplicationFactory<Program> Factory;
+        public WebApplicationFactory<Program> Factory;
         public ApplicationDatabase Database;
         public IMediator Mediator;
 
@@ -29,7 +30,16 @@ namespace SubscriptionQuery.Test.Helpers
             Database = scope.ServiceProvider.GetRequiredService<ApplicationDatabase>();
             Mediator = scope.ServiceProvider.GetRequiredService<IMediator>();
         }
-
+        public static GrpcChannel CreateGrpcChannel(WebApplicationFactory<Program> factory)
+        {
+            var client = factory.CreateDefaultClient();
+            return GrpcChannel.ForAddress(
+                client.BaseAddress ?? new Uri("http://localhost:5139"),
+                new GrpcChannelOptions
+                {
+                    HttpClient = client
+                });
+        }
         protected static UserSubscription GetUserSubscription(Guid aggregateId, Guid userId, Guid subsciptionId, Guid invitationId, Guid accountId, Guid memberId, int sequence, Permissions permission, InvitationStatus invitationStatus, bool isJoined)
         {
             return new UserSubscription

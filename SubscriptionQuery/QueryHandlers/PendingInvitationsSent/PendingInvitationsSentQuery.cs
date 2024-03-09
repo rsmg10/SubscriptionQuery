@@ -9,7 +9,7 @@ namespace SubscriptionQuery.QueryHandlers.PendingInvitationsSent
     public record PendingInvitationsSentQuery(
         Guid AccountId,
         Guid SubscriptionId,
-        Guid UserId): IRequest<List<SentInvitation>>;
+        Guid UserId): IRequest<List<InvitationVm>>;
 
      
   

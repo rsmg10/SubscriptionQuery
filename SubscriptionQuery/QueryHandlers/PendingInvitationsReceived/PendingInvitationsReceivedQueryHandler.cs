@@ -1,12 +1,12 @@
-﻿using MediatR;
+﻿using Calzolari.Grpc.AspNetCore.Validation;
+using Google.Protobuf.WellKnownTypes;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SubscriptionQuery.Infrastructure.Presistance;
-using SubscriptionQuery.QueryHandlers.MembersInSubscription;
-using SubscriptionQuery.QueryHandlers.PendingInvitationsSent;
 
 namespace SubscriptionQuery.QueryHandlers.PendingInvitationsReceived
 {
-    public class PendingInvitationsReceivedQueryHandler : IRequestHandler<PendingInvitationsReceivedQuery, List<SentInvitation>>
+    public class PendingInvitationsReceivedQueryHandler : IRequestHandler<PendingInvitationsReceivedQuery, List<InvitationVm>>
     {
         private readonly ApplicationDatabase _db;
 
@@ -15,23 +15,27 @@ namespace SubscriptionQuery.QueryHandlers.PendingInvitationsReceived
             _db = db;
         }
 
-        public async Task<List<SentInvitation>> Handle(PendingInvitationsReceivedQuery request, CancellationToken cancellationToken)
+        public async Task<List<InvitationVm>> Handle(PendingInvitationsReceivedQuery request, CancellationToken cancellationToken)
         {
 
             var userSubscriptions = await _db.Subscriptions
               .Include(sub => sub.Invitations)
               .Where(sub => sub.MemberId == request.UserId
-                  && !sub.IsJoined 
-                  && sub.Invitations.MaxBy(x => x.DateCreated) == null ? false : (sub.Invitations.MaxBy(x => x.DateCreated)!.Status == Domain.Enums.InvitationStatus.Pending))
-               .Select(sub => sub.Invitations.MaxBy(x => x.DateCreated))
+                  && !sub.IsJoined)
               .ToListAsync(cancellationToken: cancellationToken);
 
-            return userSubscriptions.Select(inv=> new SentInvitation("subscriptionName",
-                                                                     inv.Id,
-                                                                     inv.UserSubscription.OwnerId,
-                                                                     inv.UserSubscription.OwnerId,
-                                                                     inv.DateCreated))
-                .ToList();
+            var invitations = userSubscriptions.Where(sub => sub.Invitations.MaxBy(x => x.DateCreated) == null ? false : (sub.Invitations.MaxBy(x => x.DateCreated)!.Status == Domain.Enums.InvitationStatus.Pending))
+               .Select(sub => sub.Invitations.MaxBy(x => x.DateCreated));
+
+
+            return invitations.Select(inv => new InvitationVm
+            {
+                CreatedAt = inv.DateCreated.ToTimestamp(),
+                Id = inv.Id.ToString(),
+                OwnerId = inv.UserSubscription.OwnerId.ToString(),
+                SentBy = inv.UserSubscription.OwnerId.ToString(),
+                SubscriptionName = "subscriptionName"
+            }).ToList(); 
         }
     }
 }

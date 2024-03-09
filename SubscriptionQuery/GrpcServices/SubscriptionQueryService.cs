@@ -24,19 +24,24 @@ namespace SubscriptionQuery.GrpcServices
             return await _mediator.Send(request.ToQuery());
         }
 
-        public override Task<PendingInvitationsReceivedResponse> PendingInvitationsReceived(PendingInvitationsReceivedRequest request, ServerCallContext context)
+        public override async Task<PendingInvitationsReceivedResponse> PendingInvitationsReceived(PendingInvitationsReceivedRequest request, ServerCallContext context)
         {
-            return base.PendingInvitationsReceived(request, context);
+            return new PendingInvitationsReceivedResponse
+            {
+                Invitations = { await _mediator.Send(request.ToQuery()) }
+            };
         }
-        public override Task<PendingInvitationsSentResponse> PendingInvitationsSent(PendingInvitationsSentRequest request, ServerCallContext context)
+        public override async Task<PendingInvitationsSentResponse> PendingInvitationsSent(PendingInvitationsSentRequest request, ServerCallContext context)
         {
-            return base.PendingInvitationsSent(request, context);
+            return new PendingInvitationsSentResponse
+            {
+                Invitations = { await _mediator.Send(request.ToQuery()) }
+            };
         }
 
         public override Task Notifications(Empty request, IServerStreamWriter<NotificationResponse> responseStream, ServerCallContext context)
         {
             return base.Notifications(request, responseStream, context);
-
         }
     }
 }

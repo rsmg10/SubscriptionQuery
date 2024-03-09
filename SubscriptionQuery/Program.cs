@@ -6,6 +6,7 @@ using SubscriptionQuery.Infrastructure.MessageBus;
 using SubscriptionQuery.Infrastructure.Presistance;
 using System;
 using SubscriptionQuery.Services;
+using SubscriptionQuery.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,13 @@ builder.Services.AddMediatR(options=>
 });
 
 // Add services to the container.
-builder.Services.AddGrpc();
+builder.Services.AddGrpc(options =>
+{
+    {
+        options.Interceptors.Add<ServerLoggerInterceptor>();
+        options.EnableDetailedErrors = true;
+    }
+});
 
 var app = builder.Build();
 
