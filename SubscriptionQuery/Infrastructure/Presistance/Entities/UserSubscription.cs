@@ -23,6 +23,9 @@ public partial class UserSubscription : BaseEntity
     public SubscriptionType SubscriptionType { get; set; }
     public ICollection<Invitation> Invitations { get; set; } = new List<Invitation>();
 
+    public UserSubscription()
+    {
+    }
     internal static UserSubscription Create(InvitationSent request)
     {
         return new UserSubscription
@@ -32,6 +35,7 @@ public partial class UserSubscription : BaseEntity
             MemberId = request.Data.MemberId,
             OwnerId = request.Data.UserId,
             SubscriptionId = request.Data.SubscriptionId, 
+            DateCreated = request.DateTime,
         };
     }
 
@@ -72,6 +76,8 @@ public partial class UserSubscription : BaseEntity
         Invitations.Add(Invitation.Create(request));
 
         Sequence = request.Sequence;
+        DateCreated = DateCreated == DateTime.MinValue ? request.DateTime : DateCreated;
+        DateUpdated = request.DateTime;
     }
 
     internal void Apply(MemberJoined request)
@@ -84,7 +90,9 @@ public partial class UserSubscription : BaseEntity
         OwnerId = request.Data.UserId;
         SubscriptionId = request.Data.SubscriptionId;
         MemberId = request.Data.MemberId;
-        IsJoined = true;  
+        IsJoined = true;
+
+        DateCreated = DateCreated == DateTime.MinValue ? request.DateTime : DateCreated;
     }
 
     internal void Apply(MemberLeft request)

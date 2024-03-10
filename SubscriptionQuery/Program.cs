@@ -40,7 +40,9 @@ app.MapGet("/",
     () =>
         "Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
 
-
+var scope = app.Services.CreateScope();
+var ctx = scope.ServiceProvider.GetRequiredService<ApplicationDatabase>();
+ctx.Database.Migrate();
 app.Run();
 namespace SubscriptionQuery
 {
