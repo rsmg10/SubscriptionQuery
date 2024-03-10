@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>preview</LangVersion>
         <UserSecretsId>c2d45334-86ef-4216-acd4-5eeae46aff57</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
     <ItemGroup>
@@ -28,6 +29,7 @@
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.6" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="Polly" Version="8.3.0" />
 		<PackageReference Include="Serilog" Version="3.1.1" />
